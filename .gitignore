@@ -1,0 +1,12 @@
+data/berka/
+data/synth/
+*.sql
+*.csv
+__pycache__/
+.venv/
+artefacts/
+*.aux
+*.log
+*.out
+*.toc
+data/fixtures/
