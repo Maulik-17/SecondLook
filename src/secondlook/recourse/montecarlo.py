@@ -44,6 +44,7 @@ def simulate(person, fit, prior, plan_idx, horizon, K, tau, scorer, seed, rho_ov
     lv = A.plan_levels(plan_idx)
     w = person["w"]
     m, rho, sigma = IP.draw_params(fit, prior, K, P, rho_override)
+    m = m - fit["m"]; m = fit["m"] + m * vol_mult  # parameter uncertainty in the mean scales with volatility
     sigma = sigma * vol_mult
     p_dip = float(np.clip(person["feat"]["dip_months"] / w, 0.01, 0.2))
     a, f = IP.fit_outflow(person["inc"], person["out"])
