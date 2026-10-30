@@ -24,12 +24,12 @@ def _abstain(te):
         return None
 
 
-def is_quiet(out, ratio_cap=1.5):
-    """Null-world check: no failure flag, burden ratio below the cap, planted gender proxy not on top."""
-    flags = out["failure_flags"]
-    r = out["burden_headline"]["ratio"]
+def is_quiet(out):
+    """Null-world check: no failure flag, no burden gap left after matching on true risk, and the planted gender
+    proxy is not the top predictor. (The raw worst/best burden ratio is reported but not used here: it follows
+    base-rate differences, which the null world has on purpose.)"""
     gender = [p for p in out["proxy_leakage"] if p["attribute"] == "gender"]
-    return bool(not any(flags.values()) and r is not None and r < ratio_cap
+    return bool(not any(out["failure_flags"].values()) and not out["failure_panel"]["unexplained_gap"]
                 and not any(p["planted_top"] for p in gender))
 
 
@@ -48,7 +48,8 @@ def run_audit(tau, bootstrap=True, df=None, scorer=None, write=True, with_proxy=
     head = B.headline(brows)
     curve = level_down_curve(te, ctx)
     cur_h = {"ratio": head["ratio"], "approval_rate": float((~o["rejected"]).mean())}
-    panel = failure_panel(te, ctx, tau, cur_h, o, curve, _abstain(te))
+    rm = B.risk_matched_gap(te, o["effort"], o["rejected"], brows, B=max(Bb, 50))
+    panel = failure_panel(te, ctx, tau, cur_h, o, curve, _abstain(te), unexplained=B.unexplained_gap(rm))
     sens = B.sensitivity(te, ctx, tau)
     sets = {}
     for w in B.WEIGHTS:
@@ -61,15 +62,15 @@ def run_audit(tau, bootstrap=True, df=None, scorer=None, write=True, with_proxy=
         "groups": groups, "disparate_impact": disparate_impact(groups),
         "disparate_impact_note": "The four-fifths rule is US employment guidance and has no legal force in India.",
         "burden": brows, "burden_headline": head,
-        "burden_note": "Burden among the creditworthy who were rejected; effort uses assumed weights and is a diagnostic.",
+        "burden_note": "Burden among the creditworthy who were rejected; effort uses assumed weights and is a diagnostic. For a linear scorecard the weight sets rescale every person's effort by a common factor unless a feature range limit binds, so weight sensitivity is expected to be small.",
         "burden_by_weight_set": sets, "weight_sensitivity": sens,
         "budget_curve": B.budget_curves(te, o["effort"], rg),
-        "risk_matched_gap": B.risk_matched_gap(te, o["effort"], o["rejected"], brows, B=max(Bb, 50)),
+        "risk_matched_gap": rm,
         "level_down": curve,
         "failure_flags": {k: panel[k] for k in ("level_down", "inversion", "gaming")},
         "failure_panel": panel,
         "null_world_quiet": None,
-        "proxy_leakage": proxy_leakage(df, scorer, tau, B=Bb or 50, n_perm=100 if bootstrap else 20) if with_proxy else [],
+        "proxy_leakage": proxy_leakage(df, scorer, tau, B=Bb or 50, n_perm=100 if bootstrap else 20, fast=not bootstrap) if with_proxy else [],
         "tradeoff": tradeoff(groups),
         "nolabel": nolabel_summary(te, tau),
         "months_to_approval": None,
@@ -87,5 +88,5 @@ def run_audit(tau, bootstrap=True, df=None, scorer=None, write=True, with_proxy=
 def null_world_check(data_dir, scorer=None, tau=None):
     """Run the audit on another data folder (e.g. data/synth_null) with no bootstrap; returns is_quiet(...)."""
     scorer = scorer or load_model()
-    out = run_audit(tau if tau is not None else scorer.tau, bootstrap=False, df=load(data_dir), scorer=scorer, write=False)
+    out = run_audit(tau if tau is not None else scorer.tau, bootstrap=False, df=load(data_dir, scorer), scorer=scorer, write=False)
     return is_quiet(out), out

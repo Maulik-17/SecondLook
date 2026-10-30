@@ -32,19 +32,52 @@ def effort_core(c, W, slack):
 
 def compute_efforts(Xa, s, a, sd, lo, hi, sstar, W):
     """Xa: (n,k) actionable raw features; s: (n,) raw logits; a: (k,) raw weights; sd, lo, hi: (k,).
-    Returns dict(effort (inf = infeasible, 0 if not rejected), slack, dz, dx_clipped, rejected)."""
+    Closed form first; a feature that would leave its 1st-99th percentile range is held at the bound and the
+    remaining slack is redistributed over the other features (active set). A person who still cannot reach the
+    threshold with every feature at its bound gets effort = inf.
+    Returns dict(effort (inf = infeasible, 0 if not rejected), slack, dz (final standardised move), rejected)."""
     slack = s - sstar
     rej = slack > 0
-    eff = np.zeros(len(s))
-    dz_all = np.zeros(Xa.shape)
+    n, k = Xa.shape
+    eff = np.zeros(n)
+    dz_all = np.zeros((n, k))
     if rej.any():
-        e, dz = effort_core(a * sd, W, slack[rej])
-        xn = Xa[rej] + dz * sd
-        lo_r, hi_r = np.minimum(lo, Xa[rej]), np.maximum(hi, Xa[rej])   # never push a value back inside from outside
-        xc = np.clip(xn, lo_r, hi_r)
-        s_new = s[rej] + ((xc - Xa[rej]) @ a)
-        e = np.where(s_new > sstar + 1e-9, np.inf, e)
-        eff[rej] = e
+        X = Xa[rej]
+        lo_r, hi_r = np.minimum(lo, X), np.maximum(hi, X)          # never push a value back inside from outside
+        c = a * sd
+        need = slack[rej].copy()
+        free = np.ones(X.shape, bool)
+        dx = np.zeros(X.shape)
+        done = np.zeros(len(X), bool)
+        for _ in range(k + 1):
+            S = np.sum(np.where(free, c ** 2 / W, 0.0), axis=1)
+            ok_S = S > 1e-15
+            Sd = np.where(ok_S, S, 1.0)
+            dzf = -need[:, None] * np.where(free, c / W, 0.0) / Sd[:, None]
+            prop = np.where(free, dx + dzf * sd, dx)
+            lower, upper = lo_r - X, hi_r - X
+            viol = free & ((prop < lower - 1e-12) | (prop > upper + 1e-12))
+            viol &= ~done[:, None]
+            fin = ~viol.any(axis=1) & ~done
+            # people with no violation: accept the proposal
+            dx = np.where(fin[:, None], prop, dx)
+            done |= fin
+            if done.all():
+                break
+            # people with violations: fix violators at their bound, reduce remaining need
+            act = viol.any(axis=1)
+            bound = np.where(prop > upper, upper, lower)
+            fixed_dx = np.where(viol, bound, 0.0)
+            dx = np.where(act[:, None] & viol, fixed_dx, dx)
+            need = np.where(act, need + (fixed_dx * a[None, :]).sum(axis=1), need)
+            free = free & ~viol
+            exhausted = act & ~free.any(axis=1)
+            done |= exhausted
+        s_new = s[rej] + dx @ a
+        feasible = s_new <= sstar + 1e-9
+        dz = dx / sd
+        e = np.sqrt(np.sum(W * dz ** 2, axis=1))
+        eff[rej] = np.where(feasible, e, np.inf)
         dz_all[rej] = dz
     return {"effort": eff, "slack": slack, "dz": dz_all, "rejected": rej}
 
@@ -103,6 +136,7 @@ def burden_rows(df, eff, rg, B=200, bootstrap=True):
             est = float(per.mean()) if n else float("nan")
             ci = boot_mean(per, B=B) if (bootstrap and n) else [est, est, est]
             rows.append({"attribute": a, "level": _py(l), "n": n, "n_rejected_good": nrg, "burden": ci,
+                         "mean_effort_rejected_good": float(finite[m][rg[m]].mean()) if nrg else None,
                          "infeasible_share": float(inf_n / nrg) if nrg else 0.0, "small_n": bool(n < C.MIN_GROUP_N)})
     return rows
 
@@ -113,7 +147,7 @@ def headline(rows):
         return {"worst": None, "best": None, "ratio": None}
     w = max(ok, key=lambda r: r["burden"][1])
     b = min(ok, key=lambda r: r["burden"][1])
-    ratio = float(w["burden"][1] / b["burden"][1]) if b["burden"][1] > 0 else float("inf")
+    ratio = float(w["burden"][1] / b["burden"][1]) if b["burden"][1] > 0 else None
     return {"worst": {"attribute": w["attribute"], "level": w["level"]},
             "best": {"attribute": b["attribute"], "level": b["level"]}, "ratio": ratio}
 
@@ -199,3 +233,13 @@ def gaming_and_inversion(df, ctx, o):
     wrong = (dx * dirs[None, :]) > 1e-12              # e.g. recommends raising a feature that raises risk
     inv = int(wrong.any(axis=1).sum())
     return {"gaming_ratio": ratio, "inversion_count": inv}
+
+
+def unexplained_gap(rm_rows, min_bins=3):
+    """True when, for some attribute, the worst-burden level still has a higher burden than the rest after matching on
+    true risk: at least `min_bins` of the 5 risk bins have a bootstrap interval entirely above zero."""
+    for a in {r["attribute"] for r in rm_rows}:
+        n_pos = sum(1 for r in rm_rows if r["attribute"] == a and np.isfinite(r["gap"][0]) and r["gap"][0] > 0)
+        if n_pos >= min_bins:
+            return True
+    return False

@@ -28,7 +28,7 @@ def _boot_auc(y, P, B, r):
     return [float(np.percentile(v, 2.5)), float(_auc(y, P)), float(np.percentile(v, 97.5))]
 
 
-def proxy_leakage(df, scorer, tau, B=200, n_perm=100, seed=0):
+def proxy_leakage(df, scorer, tau, B=200, n_perm=100, seed=0, fast=False):
     """df: rows with features, groups, r_true, p_default (test + val rows are used)."""
     r = np.random.default_rng(seed)
     d = df[df.split.isin(["test", "val"])].reset_index(drop=True)
@@ -40,7 +40,7 @@ def proxy_leakage(df, scorer, tau, B=200, n_perm=100, seed=0):
         classes, y = np.unique(d[A].values, return_inverse=True)
         lr = LogisticRegression(max_iter=1000)
         P1 = cross_val_predict(lr, Xz, y, cv=5, method="predict_proba")
-        P2 = cross_val_predict(HistGradientBoostingClassifier(max_iter=100, random_state=seed), Xz, y, cv=5, method="predict_proba")
+        P2 = cross_val_predict(HistGradientBoostingClassifier(max_iter=30 if fast else 100, random_state=seed), Xz, y, cv=3 if fast else 5, method="predict_proba")
         auc, auc_b = _boot_auc(y, P1, B, r), _boot_auc(y, P2, B, r)
         sub = r.choice(len(d), min(5000, len(d)), replace=False)
         null = []

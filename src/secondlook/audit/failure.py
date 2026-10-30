@@ -34,13 +34,14 @@ def level_down_flag(curve, current):
     return False
 
 
-def failure_panel(df, ctx, tau, current_row, o, curve, conformal_abstain=None):
+def failure_panel(df, ctx, tau, current_row, o, curve, conformal_abstain=None, unexplained=True):
     rg = B.rg_mask(df, o["rejected"])
     gi = B.gaming_and_inversion(df, ctx, o)
     fin = o["effort"][o["rejected"] & np.isfinite(o["effort"])]
     inf_share = float((o["rejected"] & ~np.isfinite(o["effort"])).sum() / max(o["rejected"].sum(), 1))
     panel = {
-        "level_down": level_down_flag(curve, current_row),
+        "level_down": bool(unexplained and level_down_flag(curve, current_row)),
+        "level_down_curve_only": level_down_flag(curve, current_row), "unexplained_gap": bool(unexplained),
         "inversion": bool(gi["inversion_count"] > 0), "inversion_count": gi["inversion_count"],
         "gaming": bool(gi["gaming_ratio"] > 0.3), "gaming_ratio": gi["gaming_ratio"],
         "gaming_note": "Rent, utility and recharge signals are assumed, not shown to cause default.",
