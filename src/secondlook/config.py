@@ -25,3 +25,13 @@ MIN_GROUP_N = 50
 ALPHA = 0.10
 EXPLORATION_EPS = 0.03
 W_MAX = 50
+
+# simulator (Part 1). Tuned so base default is about 11%, oracle AUC about 0.78, scorer AUC about 0.70 to 0.72
+LTI_SCALE = 0.5          # loan instalment relative to income
+POST_SHOCK_P = 0.25      # monthly chance of an unobserved expense shock after the loan
+POST_SHOCK_MAX = 2.0     # shock size, multiples of monthly income (uniform 0.3 to this)
+LOGIT_SLOPE = 0.55       # how strongly the simulated shortfall rate drives true risk
+LOGIT_INTERCEPT = -1.0
+LOGIT_FRAILTY_SD = 0.6   # unobserved heterogeneity; keeps the oracle AUC below 1
+LEGACY_APPROVE_SHARE = 0.60
+BIAS_FLAGS = True        # measurement bias, income-volatility gap, planted proxies (False = control run)
