@@ -113,7 +113,12 @@ def run_uncertainty(eps, alpha, df=None, write=True, seed=0):
         low = [k for k, e in v["cell_ess"].items() if e < 30]
         if low:
             warns.append(f"{name}: effective sample size below 30 in cell(s) {', '.join(low)}.")
-    out = {"eps": float(eps), "alpha": float(alpha), "variants": variants, "warnings": warns,
+    try:
+        from ..model.scorer import load_model
+        ch = str(getattr(load_model(), "config_hash", "unset"))
+    except Exception:
+        ch = "unset"
+    out = {"eps": float(eps), "alpha": float(alpha), "config_hash": ch, "variants": variants, "warnings": warns,
            "w_max": C.W_MAX, "disclaimer": DISCLAIMER}
     if write:
         C.ART_DIR.mkdir(parents=True, exist_ok=True)
