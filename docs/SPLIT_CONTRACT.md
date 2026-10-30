@@ -25,8 +25,8 @@ Parts 2 and 3 read Part 1's files and never write them. Part 2 and 3 are linked 
 
 | File (`DATA_DIR/`) | Columns |
 |---|---|
-| `people.parquet` | `id, split{train,val,test,oot}, gender{F,M}, urban_rural{urban,rural}, region{N,S,E,W,C}, occupation{gig,shop,student}, thin_file{0,1}, shared_phone{0,1}, document_poor{0,1}, loan_amount, loan_term, y_true, r_true` (r_true = the generator's true default probability) |
-| `features.parquet` | `id` + the 15 names in `contracts.FEATURES` (no group, no latent) |
+| `people.parquet` | `id, split{train,val,test,oot}, gender{F,M}, urban_rural{urban,rural}, region{R1..R6}, occupation{gig_driver,gig_delivery,shopkeeper,student_parttime,salaried_informal}, thin_file{0,1}, shared_phone{0,1}, document_poor{0,1}, loan_amount, loan_term, y_true, r_true` (r_true = the generator's true default probability) |
+| `features.parquet` | `id` + the 17 names in `contracts.FEATURES` (no group, no latent) |
 | `monthly.parquet` (many rows per id) | `id, month, inflow, outflow, balance` (month 1..24 history, 25..36 outcome window) |
 | `scores.parquet` | `id, p_default, logit, decision{1=approve}, tau` for every person and every split |
 | `lender_history.parquet` | `id, approved_legacy, explored, propensity, observed, y_obs` (propensity = e(x) = probability of having an observed outcome; y_obs is NaN when not observed) |
@@ -49,7 +49,7 @@ s.tau: float                              # cost-based default
 s.linear_params() -> {"features": [...], "w": ndarray (raw units), "b": float}   # logit = w @ x + b
 s.logit_threshold() -> float              # raw logit that corresponds to s.tau
 ```
-`model/scorer.py` is a working reference version; Part 1 may replace the internals but must keep this interface. Part 1 also provides `secondlook.model.features.build_features(monthly: DataFrame, loan_amount: float, loan_term: int) -> DataFrame` (one row, columns = `FEATURES`), used by Part 3 to roll an income path forward and rescore. Another tau than `s.tau` is passed by the caller as an argument; nothing mutates `s`.
+`model/scorer.py` is a working reference version; Part 1 may replace the internals but must keep this interface. Part 1 also provides `secondlook.model.features.cash_features(inc, out, bal, emi) -> dict[str, ndarray]` where `inc, out, bal` are arrays of shape `(K, w)` (K paths, w months, oldest first) and `emi` has shape `(K,)`; it returns the 12 cash-derived features (`mean_inflow, median_inflow, inflow_cv, dip_months, spike_months, weeks_of_buffer, low_balance_days, expense_to_income, balance_level, balance_slope, months_observed, emi_to_income`). The simulator and Part 3 both call it, so features can never drift apart. The 5 non-cash features (three `*_on_time`, two planted proxies) are held at the person's stored values by Part 3. Another tau than `s.tau` is passed by the caller as an argument; nothing mutates `s`.
 
 ## Part 2 deliverables
 
@@ -80,7 +80,9 @@ audit_summary.json = {
   "risk_matched_gap": [{"attribute": str, "bin": int, "gap": [..]}],
   "level_down": [{"tau": float, "approval_rate": float, "worst_group_burden": float}],
   "failure_flags": {"level_down": bool, "inversion": bool, "gaming": bool},
-  "proxy_leakage": {"auc": [..], "permutation_null": [..], "conditional_gap": [..]},
+  "null_world_quiet": bool | null,
+  "proxy_leakage": [{"attribute": str, "auc": [..], "auc_boosted": [..], "permutation_null_95": float, "p_value": float,
+                     "planted_top": bool, "conditional_gap": [..]}],
   "tradeoff": {"base_rates": {"<attribute>:<level>": float}, "note": str},
   "months_to_approval": [{"attribute": str, "level": str, "n": int, "median_months": float|null, "never_share": float}] | null }
 uncertainty.json = {"eps": float, "alpha": float,
