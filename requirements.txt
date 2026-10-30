@@ -1,0 +1,24 @@
+# SecondLook pinned packages. Versions are the ones installed and checked in the team venv.
+# Target interpreter: Python 3.14.x (see .python-version).
+numpy==2.4.3
+scipy==1.17.0
+pandas==3.0.2
+pyarrow==24.0.0
+scikit-learn==1.8.0
+statsmodels==0.14.6
+xgboost==3.4.1
+joblib==1.5.2
+pydantic==2.13.5
+fastapi==0.141.1
+starlette==1.0.1
+uvicorn==0.47.0
+python-multipart==0.0.29
+httpx==0.28.1
+streamlit==1.57.0
+plotly==6.9.0
+matplotlib==3.10.9
+pytest==9.1.1
+# optional: used only for comparisons and cross-checks
+shap==0.54.1
+fairlearn==0.15.0
+MAPIE==1.6.0
