@@ -27,6 +27,15 @@ def get_ctx():
     return _CACHE
 
 
+def get_retrained():
+    """Retrained scorers (each with its own tau), built once per data/artefact directory."""
+    c = get_ctx()
+    if "retrained" not in c:
+        from .retrain import build_retrained
+        c["retrained"] = build_retrained(c["people"], c["feats"])
+    return c["retrained"]
+
+
 def get_person(pid):
     c = get_ctx()
     pid = int(pid)
