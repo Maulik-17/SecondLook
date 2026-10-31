@@ -33,6 +33,6 @@ POST_SHOCK_MAX = 2.0     # shock size, multiples of monthly income (uniform 0.3 
 LOGIT_SLOPE = 0.55       # how strongly the simulated shortfall rate drives true risk
 LOGIT_INTERCEPT = -1.0
 LOGIT_FRAILTY_SD = 0.6   # unobserved heterogeneity; keeps the oracle AUC below 1
-ON_TIME_RISK_LOAD = 0.07  # ASSUMED: how strongly rent/utility/recharge on-time rates fall with hidden risk (per sd of the true risk logit)
+ON_TIME_RISK_LOAD = float(os.environ.get("SL_ON_TIME_LOAD", 0.0))  # ASSUMED: how strongly rent/utility/recharge on-time rates fall with hidden risk (per sd of the true risk logit). 0 = off (default); see docs/ON_TIME_VARIANT.md
 LEGACY_APPROVE_SHARE = 0.60
 BIAS_FLAGS = os.environ.get("SL_BIAS", "1") != "0"   # measurement bias, income-volatility gap, planted proxies (SL_BIAS=0 = control run)
