@@ -38,7 +38,7 @@ def test_gamma_one_matches_plain_fit_and_perturb_clips():
 def test_gamma_worst_direction_never_raises_coverage_above_gamma_one_much():
     cal, te, w = _cal_te(seed=3)
     out = gamma_sensitivity(cal, w, te, 0.1, gammas=(1.0, 3.0))
-    assert out["rows"][1]["overall_coverage"] <= out["rows"][0]["overall_coverage"] + 1e-9 or out["rows"][1]["worst_direction"]
+    assert out["rows"][1]["overall_coverage"] <= out["rows"][0]["overall_coverage"] + 0.02
 
 
 def test_intersection_scan_skips_small_and_counts():
