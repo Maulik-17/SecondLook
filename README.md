@@ -8,7 +8,7 @@ SPHINX'26 24-hour hackathon, MNIT Jaipur. Team NexusNavigators.
 
 Gig workers, shopkeepers and students often have no credit history and are rejected by default. The task: build a score from rent, utility, recharge and cash-flow signals, check fairness across groups, use synthetic data with a consent-based design, and (bonus) provide a bias audit panel.
 
-<!-- TODO: paste the exact wording of statement 3.4 from the organiser PDF before submission. -->
+> **3.4 Alternative Credit Scoring for the Credit-Invisible.** Problem: Gig workers, small shopkeepers and students have no credit history, so formal lenders reject them even when they are reliable. Target users: Microfinance lenders, NBFCs, informal workers. Approach: Build a score from alternative signals such as rent, utility and mobile-recharge payment patterns and cash-flow consistency, with fairness checks across groups. Stack: scikit-learn, SHAP, FastAPI, Streamlit. Use synthetic data with consent-based design. Bonus twist: Bias audit panel comparing approval rates across demographics.
 
 ## 2. What SecondLook adds
 
@@ -98,7 +98,7 @@ Harshit Jangir (leader), Nikhil Saini, Shreya Chaudhary, Maulik Pratap Singhal.
 
 scikit-learn, XGBoost, FastAPI, Streamlit, plotly. Berka: P. Berka, PKDD'99 discovery challenge, obtained from the CTU Prague Relational Learning Repository; Motl and Schulte, "The CTU Prague Relational Learning Repository", arXiv:1511.03086. Methods adapted (reimplemented, no code copied): Fang et al. 2607.28847, Barrainkua et al. 2509.04128, De Toni et al. 2410.08007, Plecko 2605.11373, Kallus, Mao and Zhou 1906.00285, Tibshirani et al. (conformal under covariate shift), Scarone and Baeza-Yates 2606.18479.
 
-<!-- TODO: spot-check each arXiv id against the paper title before submitting. -->
+The arXiv ids above were checked against the arXiv listing titles on 31 Oct 2026: 2607.28847 Effort-Centric Fairness in Lending Decisions; 2509.04128 Revisiting (Un)Fairness in Recourse by Minimizing Worst-Case Social Burden; 2410.08007 Time Can Invalidate Algorithmic Recourse; 2605.11373 Causal Algorithmic Recourse: Foundations and Methods; 1906.00285 Assessing Algorithmic Fairness with Unobserved Protected Class Using Data Combination; 2606.18479 The Illusion of Improvement: Reject Inference Strategies in Credit Scoring; 1511.03086 The CTU Prague Relational Learning Repository.
 
 ## 11. Licence and disclaimer
 

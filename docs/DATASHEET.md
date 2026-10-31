@@ -21,11 +21,11 @@ A control run with the flag off, and a null cohort with unequal base rates and n
 
 ## Assumed, calibrated, real
 - Assumed: occupation income levels and volatilities, shock probabilities, rent/utility/recharge relation to cash, proxy effects, recourse action costs, decision costs.
-- Calibrated on Berka: <!-- TODO: Part 1 to list exactly which generator parameters were calibrated and the Berka figures used. -->
+- Compared with Berka, not fitted to it: `artefacts/berka_calibration.json` lists the 10/25/50/75/90th percentiles of five features in Berka and in the simulator. Median values (Berka vs simulator): `inflow_cv` 0.22 vs 0.24, `dip_months` 0 vs 1, `weeks_of_buffer` 6.8 vs 22.7, `expense_to_income` 0.99 vs 0.80, `emi_to_income` 0.15 vs 0.11. Only `inflow_cv` is close. The simulator's `weeks_of_buffer` runs about 3 times Berka's, so it is not calibrated to Berka on that feature.
 - Real: Berka (P. Berka, PKDD'99) is a real Czech bank dataset with 682 loans, 76 not successful; used for calibration and a sanity run only.
 
 ## Preprocessing
-Features come from `secondlook.model.features.cash_features` over the visible window, plus three on-time rates and two proxies. For Berka, only data before the loan date is used (temporal rule). <!-- TODO: Part 1 to confirm the Berka preprocessing description. -->
+Features come from `secondlook.model.features.cash_features` over the visible window, plus three on-time rates and two proxies. For Berka, only data before the loan date is used (temporal rule). Berka features use a 6-month window of 30-day buckets before the loan date, with at least 3 months of history required (`src/secondlook/berka/features.py`); the real-data sanity run uses 5-fold out-of-fold predictions (AUC 0.83, 95% CI 0.77 to 0.88, 76 defaults, so the interval is wide).
 
 ## Uses
 Demonstrating and testing audit methods. Not for estimating real-world default or bias, not for lending.

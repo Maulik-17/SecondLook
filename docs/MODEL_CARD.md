@@ -30,7 +30,18 @@ Groups audited: gender, urban_rural, region, occupation, thin_file, shared_phone
 Calibration by gender (test): F n = 1202, mean predicted 0.106, observed 0.096; M n = 2814, mean predicted 0.105, observed 0.112.
 
 Recourse (Part 3): see `artefacts/recourse_by_group.json` for months to approval by group under a fixed moderate plan.
-<!-- TODO: add group-table highlights from audit_summary.json once Part 2 has run on the final model. -->
+Audit highlights (`artefacts/audit_summary.json`, tau 0.20, test split, n = 4016; outcome metrics are among approved applicants, about 39% of each group has no observed outcome):
+
+| Group | n | Approval | Base default rate |
+|---|---|---|---|
+| Women | 1202 | 0.884 | 0.096 |
+| Men | 2814 | 0.882 | 0.112 |
+| Thin file | 2096 | 0.869 | 0.111 |
+| Not thin file | 1920 | 0.897 | 0.102 |
+| Shared phone | 895 | 0.891 | 0.116 |
+| Document poor | 1234 | 0.878 | 0.113 |
+
+Approval rates are close across these groups. The burden on creditworthy rejected applicants differs more: the worst-to-best ratio is 2.29 (worst group region R6, best salaried_informal), and thin-file applicants have a higher burden estimate (0.07) than other applicants (0.04). The level-down flag is raised; inversion and gaming flags are quiet. On the null cohort (unequal base rates, no injected bias) the audit stays quiet. These are properties of the injected generator, not findings about real lenders.
 
 ## Data
 See `docs/DATASHEET.md`.
