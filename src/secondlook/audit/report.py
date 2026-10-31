@@ -6,6 +6,7 @@ from .. import config as C
 from ..model.scorer import load_model
 from . import burden as B
 from .data import DISCLAIMER, load, test_pop
+from .intersections import scan as intersection_scan
 from .failure import level_down_curve, failure_panel
 from .metrics import group_table, disparate_impact
 from .nolabel import nolabel_summary
@@ -74,6 +75,7 @@ def run_audit(tau, bootstrap=True, df=None, scorer=None, write=True, with_proxy=
         "tradeoff": tradeoff(groups),
         "nolabel": nolabel_summary(te, tau),
         "months_to_approval": None,
+        "intersections": intersection_scan(te, o["effort"], rg, o["rejected"], B=min(Bb, 100)),
     }
     f = C.ART_DIR / "recourse_by_group.json"
     if f.exists():

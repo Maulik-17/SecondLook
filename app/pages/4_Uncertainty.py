@@ -51,6 +51,28 @@ if V.get("status") == "ok":
     m3.metric("Overall coverage / referral", f"{V['overall_coverage']:.3f} / {V['overall_referral']:.3f}")
     st.caption("Exact group-wise coverage and equal set size cannot both hold (Gao et al.), so both gaps are shown together.")
 
+GS = U.get("gamma_sensitivity")
+if GS:
+    st.header("Gamma sensitivity (unobserved confounding)")
+    gam = st.select_slider("Gamma (how far hidden confounding could push the weights)", options=GS["gammas"], value=GS["gammas"][0])
+    r0 = next(r for r in GS["rows"] if r["gamma"] == GS["gammas"][0])
+    r = next(r for r in GS["rows"] if r["gamma"] == gam)
+    m1, m2, m3 = st.columns(3)
+    m1.metric("Overall coverage", f"{r['overall_coverage']:.3f}", f"{r['overall_coverage'] - r0['overall_coverage']:+.3f} vs Gamma = 1", delta_color="off")
+    m2.metric("Lowest group coverage", f"{r['min_group_coverage']:.3f}")
+    m3.metric("Overall referral", f"{r['overall_referral']:.3f}", f"{r['overall_referral'] - r0['overall_referral']:+.3f} vs Gamma = 1", delta_color="off")
+    xs = [x["gamma"] for x in GS["rows"]]
+    fig = go.Figure([go.Scatter(x=xs, y=[x["overall_coverage"] for x in GS["rows"]], name="overall coverage", mode="lines+markers"),
+                     go.Scatter(x=xs, y=[x["min_group_coverage"] for x in GS["rows"]], name="lowest group coverage", mode="lines+markers")])
+    fig.add_hline(y=1 - U["alpha"], line_dash="dash")
+    fig.update_layout(xaxis_title="Gamma", yaxis_title="coverage (worse of two directions)", height=300)
+    st.plotly_chart(fig, use_container_width=True)
+    st.dataframe(pd.DataFrame(r["groups"]).round(3), use_container_width=True)
+    st.caption("This is a sensitivity analysis, not a guarantee. It asks: if something we did not record had made the lender's approvals and "
+               "explorations differ from what we assumed, by up to a factor Gamma, how far would the coverage move? Gamma = 1 is the ordinary result. "
+               "A flat line means the result is not very sensitive to this kind of confounding; a steep drop means it is. "
+               "We do not know the true Gamma. " + GS["note"])
+
 st.header("Three calibration variants")
 for name, v in U["variants"].items():
     st.subheader(name.replace("_", " "))
