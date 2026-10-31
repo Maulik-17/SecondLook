@@ -1,0 +1,12 @@
+data/
+artefacts/
+.git
+.claude
+__pycache__
+**/__pycache__
+.venv
+kaggle.json
+**/kaggle.json
+*.key
+*.pem
+.env
