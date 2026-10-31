@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from secondlook.audit.nolabel import nolabel_bounds
+from secondlook.audit.nolabel import nolabel_bounds, nolabel_bounds_closed_form
 
 
 def _tables(p_a1, ap):
@@ -36,3 +36,14 @@ def test_truth_inside_interval():
         appr = pd.DataFrame({"cell": range(k), "approval_rate": [y[z == i].mean() for i in range(k)]})
         b = nolabel_bounds(prox, appr)
         assert b["lower"] - 1e-9 <= truth <= b["upper"] + 1e-9
+
+
+def test_closed_form_matches_linear_program():
+    r = np.random.default_rng(1)
+    for _ in range(200):
+        k = int(r.integers(1, 7))
+        share = r.dirichlet(np.ones(k) * 3)
+        prox = pd.DataFrame({"cell": range(k), "p_a1": r.uniform(0.02, 0.98, k), "share": share})
+        appr = pd.DataFrame({"cell": range(k), "approval_rate": r.uniform(0.02, 0.98, k)})
+        lp, cf = nolabel_bounds(prox, appr), nolabel_bounds_closed_form(prox, appr)
+        assert abs(lp["lower"] - cf["lower"]) < 1e-7 and abs(lp["upper"] - cf["upper"]) < 1e-7

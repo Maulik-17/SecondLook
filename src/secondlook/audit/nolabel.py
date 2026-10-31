@@ -1,10 +1,12 @@
 """Bounds on a group disparity in approval when the group label is missing, given a proxy cell per person and an
 external table P(A=1 | cell).
 
-Assumption stated plainly: this is the sharp identified set under exactly two sets of constraints, (i) the observed
-joint of (cell, approval) and (ii) the externally known P(A | cell). It is the partial-identification idea of
-Kallus, Mao and Zhou (arXiv 1906.00285) written as a small linear program; it was not checked line by line against
-the paper's own estimator, so it should not be described as their method."""
+This is the demographic-disparity (DD) set of Kallus, Mao and Zhou (arXiv 1906.00285, section 4 and Proposition
+"closed-form set for DD"): the decision plays the role of their Y-hat, the proxy cell is Z, and the two marginals
+P(Y-hat | Z) and P(A | Z) are all that is used. We solve it as a small linear program and also give their closed form
+(Frechet-Hoeffding weights w^L, w^U). The two agree to solver precision (tests/test_part2_nolabel.py). What we did not
+implement is their estimation and inference (cross-fitting, calibrated confidence intervals): the bounds here are
+plug-in values from the sample, with no sampling uncertainty attached."""
 import numpy as np
 import pandas as pd
 from scipy.optimize import linprog
@@ -42,6 +44,30 @@ def nolabel_bounds(proxy_table, approval_by_cell):
     lo = linprog(c, A_eq=np.array(A_eq), b_eq=b_eq, bounds=(0, None), method="highs")
     hi = linprog(-c, A_eq=np.array(A_eq), b_eq=b_eq, bounds=(0, None), method="highs")
     lower, upper = float(lo.fun), float(-hi.fun)
+    return {"lower": lower, "upper": upper, "width": upper - lower}
+
+
+def nolabel_bounds_closed_form(proxy_table, approval_by_cell):
+    """Closed-form DD set from the paper: [mu(a; wL) - mu(b; wU), mu(a; wU) - mu(b; wL)], a = level 1, b = level 0."""
+    t = proxy_table.merge(approval_by_cell, on="cell")
+    pz = (t.share / t.share.sum()).values
+    pa1, ap = t.p_a1.values, t.approval_rate.values
+    PA1 = float((pz * pa1).sum())
+    PA0 = 1 - PA1
+    if PA1 <= 0 or PA0 <= 0:
+        return {"lower": float("nan"), "upper": float("nan"), "width": float("nan")}
+
+    def w(pa, py):                                   # lower and upper weight for P(A=alpha | yhat=1, z)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            lo = np.where(py > 0, np.maximum(0.0, 1 + (pa - 1) / py), 0.0)
+            hi = np.where(py > 0, np.minimum(1.0, pa / py), 0.0)
+        return lo, hi
+
+    a_lo, a_hi = w(pa1, ap)
+    b_lo, b_hi = w(1 - pa1, ap)
+    mu = lambda ww, den: float((pz * ap * ww).sum() / den)
+    lower = mu(a_lo, PA1) - mu(b_hi, PA0)
+    upper = mu(a_hi, PA1) - mu(b_lo, PA0)
     return {"lower": lower, "upper": upper, "width": upper - lower}
 
 
