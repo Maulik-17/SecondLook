@@ -1,0 +1,58 @@
+name: Windows package
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    env:
+      PYTHONPATH: src
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install packages
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyinstaller
+      - name: Build data, model and audit results
+        run: |
+          python scripts/make_data.py
+          python scripts/train.py
+          python scripts/run_recourse.py
+          python scripts/run_audit.py --fast
+      - name: Freeze the launcher
+        run: |
+          python -m PyInstaller packaging/secondlook.spec --noconfirm
+      - name: Add the app, source, data and results next to the executable
+        run: |
+          $d = "dist/SecondLook"
+          Copy-Item app, src, .streamlit -Destination $d -Recurse
+          New-Item -ItemType Directory -Force "$d/data" | Out-Null
+          Copy-Item data/synth "$d/data/synth" -Recurse
+          Copy-Item artefacts "$d/artefacts" -Recurse
+          Copy-Item README.md, LICENSE -Destination $d
+      - name: Smoke test the packaged app
+        run: |
+          $env:SL_NO_BROWSER = "1"
+          $p = Start-Process "dist/SecondLook/SecondLook.exe" -PassThru -WorkingDirectory "dist/SecondLook"
+          $ok = $false
+          foreach ($i in 1..60) {
+            Start-Sleep 3
+            try {
+              $a = (Invoke-WebRequest http://localhost:8501/_stcore/health -UseBasicParsing).StatusCode
+              $b = (Invoke-WebRequest http://localhost:8000/docs -UseBasicParsing).StatusCode
+              if ($a -eq 200 -and $b -eq 200) { $ok = $true; break }
+            } catch {}
+          }
+          Stop-Process -Id $p.Id -Force
+          if (-not $ok) { throw "packaged app did not answer on ports 8501 and 8000" }
+      - name: Zip
+        run: Compress-Archive -Path dist/SecondLook -DestinationPath SecondLook-windows.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SecondLook-windows
+          path: SecondLook-windows.zip
