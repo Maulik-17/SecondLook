@@ -5,7 +5,9 @@ import numpy as np
 
 from .. import config as C
 from .. import contracts as CT
-from .context import get_ctx, get_person
+from .context import get_ctx, get_person, get_retrained
+
+K_RETRAIN = 500
 
 
 def _p(person, plan_idx, horizon, K, tau, **kw):
@@ -14,13 +16,20 @@ def _p(person, plan_idx, horizon, K, tau, **kw):
 
 
 def stress_tests(person, chosen, horizon, tau, K=1000, rho_override_base=None):
-    """Success probability of the chosen plan under: drift, threshold_shift, gaming, persistence."""
+    """Success probability of the chosen plan under: drift, threshold_shift, gaming, persistence, retrain.
+
+    retrain: mean over the precomputed retrained scorers of P(approved within the horizon), each judged at its
+    own tau (see retrain.py). Note: the drift test uses innovation sd = 1.2 * sigma and the base simulation uses
+    innovation sd = sigma, which differs from the guide; this earlier approach is kept unchanged.
+    """
     rb = dict(rho_override=rho_override_base)
     return {
         "drift": _p(person, chosen, horizon, K, tau, vol_mult=1.2, **rb),
         "threshold_shift": _p(person, chosen, horizon, K, max(tau - 0.02, 0.0), **rb),
         "gaming": _p(person, chosen, horizon, K, tau, on_time_effective=False, **rb),
         "persistence": min(_p(person, chosen, horizon, K, tau, rho_override=r) for r in (0.0, 0.45, 0.9)),
+        "retrain": float(np.mean([_p(person, chosen, horizon, K_RETRAIN, float(s.tau), scorer=s, **rb)
+                                  for s in get_retrained()])),
     }
 
 

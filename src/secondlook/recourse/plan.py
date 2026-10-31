@@ -16,9 +16,10 @@ def _q(first, q):
     return None if not np.isfinite(v) else v
 
 
-def sim(person, plan_idx, horizon, K, tau, **kw):
+def sim(person, plan_idx, horizon, K, tau, scorer=None, **kw):
     c = get_ctx()
-    return MC.simulate(person, person["fit"], person["prior"], plan_idx, horizon, K, tau, c["scorer"], SEED, **kw)
+    return MC.simulate(person, person["fit"], person["prior"], plan_idx, horizon, K, tau,
+                       scorer if scorer is not None else c["scorer"], SEED, **kw)
 
 
 def plan(person_id, horizon=12, target_prob=0.8, rho_override=None, tau=None):
@@ -32,7 +33,7 @@ def plan(person_id, horizon=12, target_prob=0.8, rho_override=None, tau=None):
                 "months_to_approval_quantiles": {"p10": 0.0, "p50": 0.0, "p90": 0.0},
                 "fan_chart": {"month": h, "q10": [person["p_now"]] * horizon,
                               "q50": [person["p_now"]] * horizon, "q90": [person["p_now"]] * horizon},
-                "stress": {"drift": 1.0, "threshold_shift": 1.0, "gaming": 1.0, "persistence": 1.0},
+                "stress": {"drift": 1.0, "threshold_shift": 1.0, "gaming": 1.0, "persistence": 1.0, "retrain": 1.0},
                 "fragile": False}
     plans = sorted(A.all_plans(), key=lambda p: (A.plan_cost(p, horizon), p))
     kw = dict(rho_override=rho_override)

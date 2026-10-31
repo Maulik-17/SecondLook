@@ -124,7 +124,9 @@ def test_contract_shape(rejected):
         assert k in r
     lo, est, hi = r["p_success"]
     assert lo <= est <= hi
-    assert set(r["stress"]) == {"drift", "threshold_shift", "gaming", "persistence"}
+    assert set(r["stress"]) == {"drift", "threshold_shift", "gaming", "persistence", "retrain"}
+    assert 0.0 <= r["stress"]["retrain"] <= 1.0
+    assert r["fragile"] == bool(r["p_success"][1] >= 0.8 and min(r["stress"].values()) < 0.6)
     assert set(r["months_to_approval_quantiles"]) == {"p10", "p50", "p90"}
     for k in ("month", "q10", "q50", "q90"):
         assert len(r["fan_chart"][k]) == 8
