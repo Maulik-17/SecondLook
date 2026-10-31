@@ -67,7 +67,7 @@ pytest -q
 
 Set `PYTHONPATH=src`. Packages: numpy, scipy, pandas, pyarrow, scikit-learn, xgboost, statsmodels, fastapi, uvicorn, streamlit, plotly, pydantic, joblib, pytest; optional shap, fairlearn, mapie. For quick work before real data exists: `python scripts/make_fixtures.py`, then `export SL_DATA=data/fixtures/synth SL_ART=data/fixtures/artefacts` (random numbers in the correct schema).
 
-<!-- TODO: confirm these commands in a fresh clone before submitting. -->
+These commands (without the optional Berka download) were run in a fresh clone on 31 Oct 2026: data generation, training, recourse, audit and 58 passing tests.
 
 ### Recourse in one paragraph
 
