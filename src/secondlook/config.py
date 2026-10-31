@@ -34,4 +34,4 @@ LOGIT_SLOPE = 0.55       # how strongly the simulated shortfall rate drives true
 LOGIT_INTERCEPT = -1.0
 LOGIT_FRAILTY_SD = 0.6   # unobserved heterogeneity; keeps the oracle AUC below 1
 LEGACY_APPROVE_SHARE = 0.60
-BIAS_FLAGS = True        # measurement bias, income-volatility gap, planted proxies (False = control run)
+BIAS_FLAGS = os.environ.get("SL_BIAS", "1") != "0"   # measurement bias, income-volatility gap, planted proxies (SL_BIAS=0 = control run)
