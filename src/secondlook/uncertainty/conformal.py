@@ -120,6 +120,11 @@ def run_uncertainty(eps, alpha, df=None, write=True, seed=0):
         ch = "unset"
     out = {"eps": float(eps), "alpha": float(alpha), "config_hash": ch, "variants": variants, "warnings": warns,
            "w_max": C.W_MAX, "disclaimer": DISCLAIMER}
+    if variants["weighted"].get("status") == "ok":
+        from .gamma import gamma_sensitivity
+        d = cal[obs].copy()
+        d["y_obs"] = d.y_true.values
+        out["gamma_sensitivity"] = gamma_sensitivity(d, np.minimum(1 / prop[obs], C.W_MAX), te, alpha)
     if write:
         C.ART_DIR.mkdir(parents=True, exist_ok=True)
         with open(C.ART_DIR / "uncertainty.json", "w") as fh:

@@ -62,6 +62,19 @@ st.plotly_chart(fig, use_container_width=True)
 st.dataframe(pd.DataFrame([{"level": r["level"], "n": r["n"], "rejected and creditworthy": r["n_rejected_good"],
                             "burden": ci(r["burden"]), "infeasible share": round(r["infeasible_share"], 3)} for r in b]), use_container_width=True)
 
+# 3b. intersections
+st.header("Intersection scan")
+IX = A.get("intersections")
+if IX:
+    st.caption("Pairs of attributes, burden on the creditworthy who were rejected (same definition as above) and approval rate. "
+               f"Cells with n < {IX['min_n']} are skipped. Overall burden: {IX['overall_burden']:.3f}.")
+    st.warning(IX["caution"])
+    st.dataframe(pd.DataFrame([{"intersection": f"{r['a1']}={r['l1']} x {r['a2']}={r['l2']}", "n": r["n"],
+                                "rejected and creditworthy": r["n_rejected_good"], "burden": ci(r["burden"]),
+                                "approval": ci(r["approval"])} for r in IX["worst"]]), use_container_width=True)
+else:
+    st.info("Intersection scan is not in this audit_summary.json. Regenerate it with: python scripts/run_audit.py")
+
 # 4. budget curves
 st.header("Effort-budget curves")
 bc = [c for c in A["budget_curve"] if c["attribute"] == attr]
