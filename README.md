@@ -19,17 +19,7 @@ A plain cash-flow score is the easy part. SecondLook scores people and then audi
 3. **Volatility-aware plan.** Which repayment plan still works when income is volatile? We simulate many income futures and report the probability of approval, not a single instruction.
 4. **No labels.** What can be said about group gaps when group labels are missing? Bounds, and they are wide when the proxy is weak.
 
-## 3. Screenshots
-
-Screenshots from the running app (synthetic data):
-
-![Applicant page: consent notice, score and decision](docs/img/applicant.jpg)
-
-![Audit page: group table with intervals and burden on the creditworthy rejected](docs/img/audit.jpg)
-
-![Recourse page: cheapest plan, fan chart and stress tests](docs/img/recourse.jpg)
-
-## 4. Data
+## 3. Data
 
 - **Simulator with hidden ground truth.** Default depends on a simulated post-loan shortfall (unobserved expense shocks), never on a group label. Income is a persistent, volatile log-income process by occupation.
 - **Berka calibration.** Parts of the generator are calibrated on the Berka Czech bank dataset (see `docs/DATASHEET.md`). The data are **not Indian data**.
@@ -46,7 +36,7 @@ Screenshots from the running app (synthetic data):
 
 No caste or religion attribute exists anywhere.
 
-## 5. Architecture
+## 4. Architecture
 
 ```
 Berka (calibration) --> sim/ generator --> data/synth/*.parquet
@@ -59,7 +49,7 @@ Berka (calibration) --> sim/ generator --> data/synth/*.parquet
                        Streamlit app (app/) + FastAPI (src/secondlook/api)
 ```
 
-## 6. How to run
+## 5. How to run
 
 **One command:** `bash scripts/start.sh`. It builds the data, model and audit results if they are missing (about 7 minutes; `FAST=1` shortens it), then serves the app at http://localhost:8501 and the API at http://localhost:8000/docs. Ctrl-C stops both. Set `PYTHON=/path/to/python` to choose the interpreter. The step-by-step commands are below.
 
@@ -97,15 +87,15 @@ A rejected applicant asks what to change over the next H months. Income is fitte
 - **One command and a container:** `bash scripts/run_all.sh` runs the four pipeline steps. A `Dockerfile` is included but the image has **not been built or tested** (`docs/DOCKER.md`).
 - **No-label bounds:** the linear programme now has the paper's closed form (Kallus, Mao and Zhou, demographic-disparity set) beside it, and a test checks that the two agree. Their estimation and inference procedure is not implemented, so the bounds carry no sampling uncertainty.
 
-## 7. Stack
+## 6. Stack
 
 scikit-learn, FastAPI, Streamlit, plotly, XGBoost (optional), SHAP (optional).
 
-## 8. Team
+## 7. Team
 
 Harshit Jangir (leader), Nikhil Saini, Shreya Chaudhary, Maulik Pratap Singhal.
 
-## 9. Limits and claims we do not make
+## 8. Limits and claims we do not make
 
 - Data are synthetic or Berka (Czech), not Indian.
 - Rent, utility and recharge signals are assumed. In the current trained model the three on-time features were dropped by feature selection, so the recourse "on-time" action and the "gaming" stress test have no effect on the score (`artefacts/metrics.json`, `dropped_features`). An optional simulator variant that makes them informative exists but is off by default (`docs/ON_TIME_VARIANT.md`).
@@ -118,7 +108,7 @@ Harshit Jangir (leader), Nikhil Saini, Shreya Chaudhary, Maulik Pratap Singhal.
 - Recourse reveals how the score reacts to behaviour; real deployments must consider misuse and model extraction.
 - Any bias found is a property of the injected generator, not of the world.
 
-## 10. Attribution
+## 9. Attribution
 
 scikit-learn, XGBoost, FastAPI, Streamlit, plotly. Berka: P. Berka, PKDD'99 discovery challenge, obtained from the CTU Prague Relational Learning Repository; Motl and Schulte, "The CTU Prague Relational Learning Repository", arXiv:1511.03086. Methods adapted (reimplemented, no code copied): Fang et al. 2607.28847, Barrainkua et al. 2509.04128, De Toni et al. 2410.08007, Plecko 2605.11373, Kallus, Mao and Zhou 1906.00285, Tibshirani et al. (conformal under covariate shift), Scarone and Baeza-Yates 2606.18479.
 
