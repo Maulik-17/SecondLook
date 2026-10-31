@@ -21,7 +21,13 @@ A plain cash-flow score is the easy part. SecondLook scores people and then audi
 
 ## 3. Screenshots
 
-<!-- TODO: add 2 or 3 PNGs from the running app to docs/img/ and link them here. -->
+Screenshots from the running app (synthetic data):
+
+![Applicant page: consent notice, score and decision](docs/img/applicant.jpg)
+
+![Audit page: group table with intervals and burden on the creditworthy rejected](docs/img/audit.jpg)
+
+![Recourse page: cheapest plan, fan chart and stress tests](docs/img/recourse.jpg)
 
 ## 4. Data
 

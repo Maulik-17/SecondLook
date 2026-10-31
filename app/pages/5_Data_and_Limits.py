@@ -23,7 +23,7 @@ h = (metrics or {}).get("config_hash", "unknown")
 st.subheader("Data dictionary")
 if dd:
     df = pd.DataFrame(dd)
-    colour = {"assumed": "background-color:#fde2c8", "literature-supported": "background-color:#d6e6f5", "berka-supported": "background-color:#d4efdc"}
+    colour = {"assumed": "background-color:#fde2c8;color:#111", "literature-supported": "background-color:#d6e6f5;color:#111", "berka-supported": "background-color:#d4efdc;color:#111"}
     st.dataframe(df.style.map(lambda v: colour.get(v, ""), subset=["source"]), use_container_width=True)
     st.caption(f"n = {len(df)} features. Rent, utility and recharge signals are assumed to predict default; no source we read shows it.")
 else:
