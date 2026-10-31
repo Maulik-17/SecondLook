@@ -41,7 +41,7 @@ Audit highlights (`artefacts/audit_summary.json`, tau 0.20, test split, n = 4016
 | Shared phone | 895 | 0.891 | 0.116 |
 | Document poor | 1234 | 0.878 | 0.113 |
 
-Approval rates are close across these groups. The burden on creditworthy rejected applicants differs more: the worst-to-best ratio is 2.29 (worst group region R6, best salaried_informal), and thin-file applicants have a higher burden estimate (0.07) than other applicants (0.04). The level-down flag is raised; inversion and gaming flags are quiet. On the null cohort (unequal base rates, no injected bias) the audit stays quiet. These are properties of the injected generator, not findings about real lenders.
+Approval rates are close across these groups. The burden on creditworthy rejected applicants differs more: the worst-to-best ratio is 2.29 (worst group region R6, best salaried_informal), and thin-file applicants have a higher burden estimate (0.07) than other applicants (0.04). The level-down flag is raised; inversion and gaming flags are quiet. On the null cohort (unequal base rates, no injected bias) the audit stays quiet at the default threshold (tau 0.20), but it raises flags at stricter thresholds, and a control run over three more seeds shows the summary flags also fire with the injected biases switched off (`docs/CONTROL_RUN.md`). These are properties of the injected generator, not findings about real lenders.
 
 ## Data
 See `docs/DATASHEET.md`.

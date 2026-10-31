@@ -74,7 +74,7 @@ python scripts/run_recourse.py       # needs the model
 python scripts/run_audit.py          # needs the model; about 5 minutes (--fast skips the bootstrap)
 streamlit run app/Home.py            # http://localhost:8501
 uvicorn secondlook.api.main:app --port 8000   # docs at http://localhost:8000/docs
-pytest -q                            # 62 tests, about 2 minutes
+pytest -q                            # 66 tests, about 3 to 4 minutes
 ```
 
 Packages: numpy, scipy, pandas, pyarrow, scikit-learn, xgboost, statsmodels, fastapi, uvicorn, streamlit, plotly, pydantic, joblib, pytest; optional shap, fairlearn, mapie. For quick work before real data exists: `python scripts/make_fixtures.py`, then `export SL_DATA=data/fixtures/synth SL_ART=data/fixtures/artefacts` (random numbers in the correct schema).
@@ -87,7 +87,7 @@ A rejected applicant asks what to change over the next H months. Income is fitte
 
 ### Extra checks
 
-- **Control run (biases off):** `bash scripts/run_control.sh`. With the four injected biases off, the failure flags, the unexplained gap and the planted-proxy detection go quiet and the worst-to-best burden ratio falls from 2.29 to 1.56. One caveat: the null-world check is quiet at tau 0.20 or higher but raises false alarms at stricter thresholds (0.10 and 0.15), for either scorer. See `docs/CONTROL_RUN.md`.
+- **Control run (biases off):** `bash scripts/run_control.sh`. In the main seed, with the four injected biases off, the failure flags, the unexplained gap and the planted-proxy detection went quiet and the worst-to-best burden ratio fell from 2.29 to 1.56. **That contrast did not hold across three more seeds:** the level-down flag and the unexplained-gap flag fired with the biases on and off, and the burden ratio was not reliably larger with the biases on. So the summary flags are a sensitive screen, not a detector of our injected biases. The null-world check is also quiet only at tau 0.20 or higher. See `docs/CONTROL_RUN.md`. Reproduce with `bash scripts/run_seeds.sh`.
 - **Booster comparison:** `python scripts/run_booster.py` fits a monotone-constrained XGBoost model on the same splits and features. On our data it is no more accurate than the scorecard (test AUC 0.705 vs 0.707), and its SHAP stability over 10 bootstrap refits is not clearly better than the coefficients'. The scorecard stays the main model. See `docs/BOOSTER_COMPARISON.md`.
 - **Recourse retraining stress:** plans are also tested against the lender retraining its scorer on drifted data during the plan (five bootstrap refits, each with its own threshold). It is reported as `retrain` and counted in the fragile flag. See `docs/RETRAIN_STRESS.md`.
 - **Live API check:** `python scripts/check_api_live.py` starts a real uvicorn server and calls all eight endpoints over HTTP (all returned 200 on 31 Oct 2026).
