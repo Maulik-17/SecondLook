@@ -82,6 +82,10 @@ if st.button("Find cheapest plan") or st.session_state.get("ran"):
             "gaming": "gain from assumed rent/utility/recharge signals removed", "persistence": "worst case over rho = 0, 0.45, 0.9",
             "retrain": "lender retrains the model on drifted data (5 refits, each with its own threshold) before you finish"}
     st.dataframe(pd.DataFrame([{"test": k, "what changes": desc[k], "P(success)": round(v, 3)} for k, v in r["stress"].items()]), hide_index=True)
+    _used = set(ctx["scorer"].features)
+    if not {"rent_on_time", "utility_on_time", "recharge_on_time"} & _used:
+        st.caption("The current scorecard does not use the rent, utility or recharge on-time signals (feature selection dropped them), "
+                   "so the on-time lever and the gaming test have no effect on the score here.")
 
 with st.expander("Action costs and levels (assumptions, not estimates)"):
     st.dataframe(pd.DataFrame([{"action": a, "levels": d["levels"], "cost per month (one-off for smaller_loan)": d["cost"]} for a, d in A.ACTIONS.items()]), hide_index=True)

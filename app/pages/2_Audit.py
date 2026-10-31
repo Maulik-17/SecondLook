@@ -37,8 +37,8 @@ st.caption("Outcome metrics (PPV, TPR, FPR) are among the approved / by approval
 rows = [g for g in A["groups"] if g["attribute"] == attr]
 tbl = pd.DataFrame([{"level": g["level"], "n": g["n"], "approval": ci(g["approval"]), "base rate": ci(g["base_rate"]),
                      "PPV (among approved)": ci(g["ppv"]), "TPR": ci(g["tpr"]), "FPR": ci(g["fpr"]),
-                     "ECE": round(g["ece"], 3), "Brier": round(g["brier"], 3),
-                     "missing outcome share": round(g["missing_outcome_share"], 3), "n >= 50": g["n"] >= min_n} for g in rows])
+                     "ECE": f"{g['ece']:.3f}", "Brier": f"{g['brier']:.3f}",
+                     "missing outcome share": f"{g['missing_outcome_share']:.3f}", "n >= 50": g["n"] >= min_n} for g in rows])
 st.dataframe(tbl.style.apply(lambda r: ["color: #999" if not r["n >= 50"] else "" for _ in r], axis=1), use_container_width=True)
 di = A.get("disparate_impact", {}).get(attr)
 st.metric("Approval-rate ratio (min / max across levels with n >= 50)", "n/a" if di is None else f"{di:.2f}")

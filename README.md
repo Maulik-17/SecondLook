@@ -85,9 +85,10 @@ A rejected applicant asks what to change over the next H months. Income is fitte
 
 ### Extra checks
 
-- **Control run (biases off):** `bash scripts/run_control.sh`. With the four injected biases off, the failure flags, the unexplained gap and the planted-proxy detection go quiet and the worst-to-best burden ratio falls from 2.29 to 1.56. One caveat: the null-world check on the control scorer was not quiet. See `docs/CONTROL_RUN.md`.
+- **Control run (biases off):** `bash scripts/run_control.sh`. With the four injected biases off, the failure flags, the unexplained gap and the planted-proxy detection go quiet and the worst-to-best burden ratio falls from 2.29 to 1.56. One caveat: the null-world check is quiet at tau 0.20 or higher but raises false alarms at stricter thresholds (0.10 and 0.15), for either scorer. See `docs/CONTROL_RUN.md`.
 - **Booster comparison:** `python scripts/run_booster.py` fits a monotone-constrained XGBoost model on the same splits and features. On our data it is no more accurate than the scorecard (test AUC 0.705 vs 0.707), and its SHAP stability over 10 bootstrap refits is not clearly better than the coefficients'. The scorecard stays the main model. See `docs/BOOSTER_COMPARISON.md`.
 - **Recourse retraining stress:** plans are also tested against the lender retraining its scorer on drifted data during the plan (five bootstrap refits, each with its own threshold). It is reported as `retrain` and counted in the fragile flag. See `docs/RETRAIN_STRESS.md`.
+- **Live API check:** `python scripts/check_api_live.py` starts a real uvicorn server and calls all eight endpoints over HTTP (all returned 200 on 31 Oct 2026).
 - **No-label bounds:** the linear programme now has the paper's closed form (Kallus, Mao and Zhou, demographic-disparity set) beside it, and a test checks that the two agree. Their estimation and inference procedure is not implemented, so the bounds carry no sampling uncertainty.
 
 ## 7. Stack
