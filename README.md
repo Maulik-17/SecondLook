@@ -63,15 +63,19 @@ Berka (calibration) --> sim/ generator --> data/synth/*.parquet
 
 ```
 git clone <repo> && cd SecondLook
-bash scripts/fetch_berka.sh        # optional: downloads the Berka dump
-python scripts/make_data.py && python scripts/train.py
-python scripts/run_recourse.py && python scripts/run_audit.py
-streamlit run app/Home.py
-uvicorn secondlook.api.main:app --port 8000
-pytest -q
+export PYTHONPATH=src                # Python 3.14, packages as in requirements.txt
+bash scripts/fetch_berka.sh          # optional: downloads the Berka dump
+# run these four in order: each needs the files written by the one before
+python scripts/make_data.py          # synthetic people and cash flows -> data/synth
+python scripts/train.py              # scorer and calibration -> artefacts/
+python scripts/run_recourse.py       # needs the model
+python scripts/run_audit.py          # needs the model; about 5 minutes (--fast skips the bootstrap)
+streamlit run app/Home.py            # http://localhost:8501
+uvicorn secondlook.api.main:app --port 8000   # docs at http://localhost:8000/docs
+pytest -q                            # 58 tests, about 1.5 minutes
 ```
 
-Set `PYTHONPATH=src`. Packages: numpy, scipy, pandas, pyarrow, scikit-learn, xgboost, statsmodels, fastapi, uvicorn, streamlit, plotly, pydantic, joblib, pytest; optional shap, fairlearn, mapie. For quick work before real data exists: `python scripts/make_fixtures.py`, then `export SL_DATA=data/fixtures/synth SL_ART=data/fixtures/artefacts` (random numbers in the correct schema).
+Packages: numpy, scipy, pandas, pyarrow, scikit-learn, xgboost, statsmodels, fastapi, uvicorn, streamlit, plotly, pydantic, joblib, pytest; optional shap, fairlearn, mapie. For quick work before real data exists: `python scripts/make_fixtures.py`, then `export SL_DATA=data/fixtures/synth SL_ART=data/fixtures/artefacts` (random numbers in the correct schema).
 
 These commands (without the optional Berka download) were run in a fresh clone on 31 Oct 2026: data generation, training, recourse, audit and 58 passing tests.
 
