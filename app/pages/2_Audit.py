@@ -13,6 +13,10 @@ from secondlook import config as C
 from secondlook.audit.nolabel import nolabel_bounds
 
 st.set_page_config(page_title="Audit", layout="wide")
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+import theme
+theme.apply()
 st.title("Audit")
 st.warning("Audit-tool demonstration on synthetic data. Not findings about real lenders.")
 

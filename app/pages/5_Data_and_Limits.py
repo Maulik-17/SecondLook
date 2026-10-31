@@ -9,6 +9,10 @@ from secondlook import config as C
 
 DISCLAIMER = "Synthetic data; an audit-tool demonstration, not a lending decision tool."
 st.set_page_config(page_title="Data and limits", layout="wide")
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+import theme
+theme.apply()
 st.title("Data and limits")
 
 

@@ -6,6 +6,12 @@ from secondlook import config as C
 
 DISCLAIMER = "Synthetic data; an audit-tool demonstration, not a lending decision tool."
 st.set_page_config(page_title="SecondLook", layout="wide")
+
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import theme
+theme.apply()
+
 st.title("SecondLook")
 st.write(
     "SecondLook scores people with thin credit files, such as gig workers, shopkeepers and students, from cash-flow signals, "

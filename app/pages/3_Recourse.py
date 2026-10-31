@@ -16,6 +16,10 @@ from secondlook.recourse.plan import plan as _plan
 DISCLAIMER = "Audit tool demonstration, not findings about real lenders. Data are synthetic (Berka-calibrated)."
 
 st.set_page_config(page_title="Recourse", layout="wide")
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+import theme
+theme.apply()
 st.title("Recourse: cheapest plan under volatile income")
 st.caption(DISCLAIMER)
 

@@ -11,6 +11,10 @@ from secondlook import config as C
 from secondlook.audit.data import DISCLAIMER
 
 st.set_page_config(page_title="Uncertainty", layout="wide")
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+import theme
+theme.apply()
 st.title("Uncertainty and referral")
 st.warning("Audit-tool demonstration on synthetic data. Not findings about real lenders.")
 
