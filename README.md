@@ -112,5 +112,4 @@ The arXiv ids above were checked against the arXiv listing titles on 31 Oct 2026
 
 ## 11. Licence and disclaimer
 
-<!-- TODO: team to confirm licence; MIT proposed. -->
-MIT (proposed). **Audit tool demonstration, not findings about real lenders.**
+Code and documents: MIT, see `LICENSE`. The Berka dataset is not included and keeps its own terms (the repository it comes from states no licence). **Audit tool demonstration, not findings about real lenders.**
