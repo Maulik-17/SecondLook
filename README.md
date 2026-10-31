@@ -72,7 +72,7 @@ python scripts/run_recourse.py       # needs the model
 python scripts/run_audit.py          # needs the model; about 5 minutes (--fast skips the bootstrap)
 streamlit run app/Home.py            # http://localhost:8501
 uvicorn secondlook.api.main:app --port 8000   # docs at http://localhost:8000/docs
-pytest -q                            # 58 tests, about 1.5 minutes
+pytest -q                            # 62 tests, about 2 minutes
 ```
 
 Packages: numpy, scipy, pandas, pyarrow, scikit-learn, xgboost, statsmodels, fastapi, uvicorn, streamlit, plotly, pydantic, joblib, pytest; optional shap, fairlearn, mapie. For quick work before real data exists: `python scripts/make_fixtures.py`, then `export SL_DATA=data/fixtures/synth SL_ART=data/fixtures/artefacts` (random numbers in the correct schema).
@@ -82,6 +82,13 @@ These commands (without the optional Berka download) were run in a fresh clone o
 ### Recourse in one paragraph
 
 A rejected applicant asks what to change over the next H months. Income is fitted as an AR(1) process on log inflow using only the months the model sees (thin files: 3 to 5), with shrinkage towards an occupation prior. For each of 81 candidate plans (cut spending, extra income, on-time payments, smaller loan) we draw 500 to 1000 income paths with common random numbers, rescore each month with the same model, and record the first month with `p_default <= tau`. We return the cheapest plan whose probability of approval within H months reaches the target (default 0.8), a fan chart, and four stress tests (volatility drift, stricter threshold, removing the assumed on-time signals, income persistence). A plan is flagged fragile if it meets the target but falls below 0.6 under any stress. It is a model-conditional probability on synthetic data.
+
+### Extra checks
+
+- **Control run (biases off):** `bash scripts/run_control.sh`. With the four injected biases off, the failure flags, the unexplained gap and the planted-proxy detection go quiet and the worst-to-best burden ratio falls from 2.29 to 1.56. One caveat: the null-world check on the control scorer was not quiet. See `docs/CONTROL_RUN.md`.
+- **Booster comparison:** `python scripts/run_booster.py` fits a monotone-constrained XGBoost model on the same splits and features. On our data it is no more accurate than the scorecard (test AUC 0.705 vs 0.707), and its SHAP stability over 10 bootstrap refits is not clearly better than the coefficients'. The scorecard stays the main model. See `docs/BOOSTER_COMPARISON.md`.
+- **Recourse retraining stress:** plans are also tested against the lender retraining its scorer on drifted data during the plan (five bootstrap refits, each with its own threshold). It is reported as `retrain` and counted in the fragile flag. See `docs/RETRAIN_STRESS.md`.
+- **No-label bounds:** the linear programme now has the paper's closed form (Kallus, Mao and Zhou, demographic-disparity set) beside it, and a test checks that the two agree. Their estimation and inference procedure is not implemented, so the bounds carry no sampling uncertainty.
 
 ## 7. Stack
 
