@@ -84,6 +84,7 @@ def generate(n, seed, cohort="main", T=C.HISTORY_MONTHS, H=C.OUTCOME_MONTHS, K=2
     cols = ["mean_inflow", "median_inflow", "inflow_cv", "dip_months", "spike_months", "weeks_of_buffer", "low_balance_days",
             "expense_to_income", "balance_level", "balance_slope", "months_observed", "emi_to_income"]
     F = {c: np.zeros(n) for c in cols + ["rent_on_time", "utility_on_time", "recharge_on_time"]}
+    z_risk = (lg - lg.mean()) / lg.std()               # ASSUMPTION: payment discipline reflects the hidden risk, which cash features do not capture
     for mm in np.unique(m):
         idx = np.where(m == mm)[0]
         I, O, B = inc[T - mm:, idx].T, out[T - mm:, idx].T, bal[T - mm:, idx].T
@@ -95,7 +96,7 @@ def generate(n, seed, cohort="main", T=C.HISTORY_MONTHS, H=C.OUTCOME_MONTHS, K=2
             if bias:                                    # injected bias 1: noisier and lower for shared-phone/document-poor
                 bad = shared[idx] | docp[idx]
                 noise = noise - .08 * bad + r.normal(0, .1, len(idx)) * bad
-            F[nm][idx] = np.clip(base + .25 * np.tanh(cash) + noise, 0, 1)
+            F[nm][idx] = np.clip(base + .25 * np.tanh(cash) - C.ON_TIME_RISK_LOAD * z_risk[idx] + noise, 0, 1)
     F = pd.DataFrame(F)
     F["night_active_share"] = np.clip(.3 + (.055 * fem if bias else 0) + .1 * r.standard_normal(n), 0, 1)   # planted proxy: gender
     F["local_market_share"] = np.clip(.2 + (.1 * region if bias else 0) + .1 * r.standard_normal(n), 0, 1)  # planted proxy: region

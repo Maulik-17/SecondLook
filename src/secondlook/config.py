@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = Path(os.environ.get("SL_DATA", ROOT / "data" / "synth"))
 ART_DIR = Path(os.environ.get("SL_ART", ROOT / "artefacts"))
 
-SEED = 20261030
+SEED = int(os.environ.get("SL_SEED", 20261030))
 N_PEOPLE = 20000
 HISTORY_MONTHS = 24          # months before application
 OUTCOME_MONTHS = 12          # months after the loan
@@ -33,5 +33,6 @@ POST_SHOCK_MAX = 2.0     # shock size, multiples of monthly income (uniform 0.3 
 LOGIT_SLOPE = 0.55       # how strongly the simulated shortfall rate drives true risk
 LOGIT_INTERCEPT = -1.0
 LOGIT_FRAILTY_SD = 0.6   # unobserved heterogeneity; keeps the oracle AUC below 1
+ON_TIME_RISK_LOAD = 0.07  # ASSUMED: how strongly rent/utility/recharge on-time rates fall with hidden risk (per sd of the true risk logit)
 LEGACY_APPROVE_SHARE = 0.60
 BIAS_FLAGS = os.environ.get("SL_BIAS", "1") != "0"   # measurement bias, income-volatility gap, planted proxies (SL_BIAS=0 = control run)
