@@ -113,4 +113,4 @@ To show the app inside a page of the main site, use an iframe pointing at `https
 
 ## Licence note
 
-The project is AGPL-3.0. A public deployment should let visitors reach the source, for example with a link to https://github.com/Maulik-17/SecondLook on the portfolio page or in the app.
+The project is Apache-2.0, so a public deployment has no source-disclosure duty. Keep the `LICENSE` and `NOTICE` files with any copy of the code, and consider linking https://github.com/Maulik-17/SecondLook from the portfolio page.
