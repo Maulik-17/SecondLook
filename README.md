@@ -100,7 +100,7 @@ scikit-learn, FastAPI, Streamlit, plotly, XGBoost (optional), SHAP (optional).
 | Member | Contribution |
 |---|---|
 | Harshit Jangir (leader) | Streamlit user interface |
-| Nikhil Saini | Finance research and data collection |
+| Nikhil Saini | Finance research, data collection and the Berka dataset |
 | Shreya | Streamlit user interface |
 | Maulik Pratap Singhal | Simulator, scorer, audit, uncertainty, recourse, API, tests and integration |
 
