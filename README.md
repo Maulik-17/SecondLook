@@ -93,7 +93,7 @@ scikit-learn, FastAPI, Streamlit, plotly, XGBoost (optional), SHAP (optional).
 
 ## 7. Documents
 
-`docs/MODEL_CARD.md` (model), `docs/DATASHEET.md` (data), `docs/DATA_CONTRACT.md` (file schemas and function interfaces), `docs/DEMO_SCRIPT.md`, `docs/CONTROL_RUN.md`, `docs/BOOSTER_COMPARISON.md`, `docs/RETRAIN_STRESS.md`, `docs/ON_TIME_VARIANT.md`.
+`docs/MODEL_CARD.md` (model), `docs/DATASHEET.md` (data), `docs/DATA_CONTRACT.md` (file schemas and function interfaces), `docs/DEMO_SCRIPT.md`, `docs/CONTROL_RUN.md`, `docs/BOOSTER_COMPARISON.md`, `docs/RETRAIN_STRESS.md`, `docs/ON_TIME_VARIANT.md`, `docs/DEPLOY.md` (VPS deployment).
 
 ## 8. Team
 
