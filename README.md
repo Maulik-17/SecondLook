@@ -2,7 +2,7 @@
 
 **Status: audit-tool demonstration on synthetic data. Not a lending decision tool. Nothing here is a finding about real lenders.**
 
-SPHINX'26 24-hour hackathon, MNIT Jaipur. Team NexusNavigators.
+SPHINX'26 24-hour hackathon, MNIT Jaipur. Team NexusNavigators. **First place.**
 
 ## 1. Problem statement 3.4
 
@@ -54,9 +54,9 @@ Berka (calibration) --> sim/ generator --> data/synth/*.parquet
 **One command:** `bash scripts/start.sh`. It builds the data, model and audit results if they are missing (about 7 minutes; `FAST=1` shortens it), then serves the app at http://localhost:8501 and the API at http://localhost:8000/docs. Ctrl-C stops both. Set `PYTHON=/path/to/python` to choose the interpreter. The step-by-step commands are below.
 
 ```
-git clone <repo> && cd SecondLook
+git clone https://github.com/Maulik-17/SecondLook.git && cd SecondLook
 export PYTHONPATH=src                # Python 3.14, packages as in requirements.txt
-bash scripts/fetch_berka.sh          # optional: downloads the Berka dump
+# Berka is optional and not included. Only scripts/berka_sanity.py uses it: put the CTU Prague dump at data/berka/financial.sql or set SL_BERKA
 # run these four in order: each needs the files written by the one before
 python scripts/make_data.py          # synthetic people and cash flows -> data/synth
 python scripts/train.py              # scorer and calibration -> artefacts/
@@ -69,7 +69,7 @@ pytest -q                            # 66 tests, about 3 to 4 minutes
 
 Packages: numpy, scipy, pandas, pyarrow, scikit-learn, xgboost, statsmodels, fastapi, uvicorn, streamlit, plotly, pydantic, joblib, pytest; optional shap, fairlearn, mapie. For quick work before real data exists: `python scripts/make_fixtures.py`, then `export SL_DATA=data/fixtures/synth SL_ART=data/fixtures/artefacts` (random numbers in the correct schema).
 
-These commands (without the optional Berka download) were run in a fresh clone on 31 Oct 2026: data generation, training, recourse, audit and 58 passing tests.
+These commands (without the optional Berka download) were run in a fresh clone on 31 Oct 2026: data generation, training, recourse and audit. The 66 tests were re-run on the final tree the same day and all passed.
 
 ### Recourse in one paragraph
 
@@ -93,7 +93,7 @@ scikit-learn, FastAPI, Streamlit, plotly, XGBoost (optional), SHAP (optional).
 
 ## 7. Team
 
-Harshit Jangir (leader), Nikhil Saini, Shreya Chaudhary, Maulik Pratap Singhal.
+Harshit Jangir (leader), Nikhil Saini, Shreya, Maulik Pratap Singhal.
 
 ## 8. Limits and claims we do not make
 
@@ -114,6 +114,6 @@ scikit-learn, XGBoost, FastAPI, Streamlit, plotly. Berka: P. Berka, PKDD'99 disc
 
 The arXiv ids above were checked against the arXiv listing titles on 31 Oct 2026: 2607.28847 Effort-Centric Fairness in Lending Decisions; 2509.04128 Revisiting (Un)Fairness in Recourse by Minimizing Worst-Case Social Burden; 2410.08007 Time Can Invalidate Algorithmic Recourse; 2605.11373 Causal Algorithmic Recourse: Foundations and Methods; 1906.00285 Assessing Algorithmic Fairness with Unobserved Protected Class Using Data Combination; 2606.18479 The Illusion of Improvement: Reject Inference Strategies in Credit Scoring; 1511.03086 The CTU Prague Relational Learning Repository.
 
-## 11. Licence and disclaimer
+## 10. Licence and disclaimer
 
 Code and documents: MIT, see `LICENSE`. The Berka dataset is not included and keeps its own terms (the repository it comes from states no licence). **Audit tool demonstration, not findings about real lenders.**

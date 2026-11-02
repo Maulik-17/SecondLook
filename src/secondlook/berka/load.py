@@ -1,11 +1,12 @@
 """Reads tables out of the Berka MariaDB dump using only the standard library (no database server needed)."""
 import ast
+import os
 import re
 from functools import lru_cache
 
 import pandas as pd
 
-DEFAULT_PATH = "/home/msinghal/Documents/Hackathon/hackathon/data/berka/financial.sql"
+DEFAULT_PATH = os.environ.get("SL_BERKA", "data/berka/financial.sql")
 
 
 @lru_cache(maxsize=1)

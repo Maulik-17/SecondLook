@@ -31,7 +31,7 @@ Features come from `secondlook.model.features.cash_features` over the visible wi
 Demonstrating and testing audit methods. Not for estimating real-world default or bias, not for lending.
 
 ## Distribution
-Generator code only. Berka is not redistributed; use `scripts/fetch_berka.sh`.
+Generator code only. Berka is not redistributed; obtain it from the CTU Prague Relational Learning Repository and point `SL_BERKA` at the `financial.sql` dump (default `data/berka/financial.sql`).
 
 ## Maintenance
 None after the hackathon.
