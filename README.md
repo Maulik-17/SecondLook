@@ -93,11 +93,13 @@ scikit-learn, FastAPI, Streamlit, plotly, XGBoost (optional), SHAP (optional).
 
 ## 7. Documents
 
-`docs/MODEL_CARD.md` (model), `docs/DATASHEET.md` (data), `docs/DATA_CONTRACT.md` (file schemas and function interfaces), `docs/DEMO_SCRIPT.md`, `docs/CONTROL_RUN.md`, `docs/BOOSTER_COMPARISON.md`, `docs/RETRAIN_STRESS.md`, `docs/ON_TIME_VARIANT.md`, `docs/DEPLOY.md` (VPS deployment).
+`docs/MODEL_CARD.md` (model), `docs/DATASHEET.md` (data), `docs/DATA_CONTRACT.md` (file schemas and function interfaces), `docs/DEMO_SCRIPT.md`, `docs/CONTROL_RUN.md`, `docs/BOOSTER_COMPARISON.md`, `docs/RETRAIN_STRESS.md`, `docs/ON_TIME_VARIANT.md`, `docs/DEPLOY.md` (VPS deployment), `docs/PRESENTING.md` (showing it).
 
 ## 8. Team
 
 Harshit Jangir (leader), Nikhil Saini, Shreya, Maulik Pratap Singhal.
+
+Every team member is a co-author and may present, host or fork this project (Apache-2.0), keeping `LICENSE` and `NOTICE`. How to show it: `docs/PRESENTING.md`.
 
 ## 9. Limits and claims we do not make
 
@@ -120,4 +122,4 @@ The arXiv ids above were checked against the arXiv listing titles on 31 Oct 2026
 
 ## 11. Licence and disclaimer
 
-Copyright 2026 Team NexusNavigators (Harshit Jangir, Nikhil Saini, Shreya, Maulik Pratap Singhal). Code and documents: Apache License 2.0, see `LICENSE` and `NOTICE`. The Berka dataset is not included and keeps its own terms (the repository it comes from states no licence). **Audit tool demonstration, not findings about real lenders.**
+Copyright 2026 Harshit Jangir, Nikhil Saini, Shreya, Maulik Pratap Singhal (Team NexusNavigators). Code and documents: Apache License 2.0, see `LICENSE` and `NOTICE`. The Berka dataset is not included and keeps its own terms (the repository it comes from states no licence). **Audit tool demonstration, not findings about real lenders.**
