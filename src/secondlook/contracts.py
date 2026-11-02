@@ -1,4 +1,4 @@
-"""Shared schemas. The three parts exchange ONLY these files and these function signatures (docs/SPLIT_CONTRACT.md)."""
+"""Shared schemas. The pipeline stages exchange ONLY these files and these function signatures (docs/DATA_CONTRACT.md)."""
 import pandas as pd
 
 GROUPS = {
@@ -40,7 +40,7 @@ TABLES = {  # file name (parquet) -> required columns
     "scores": ["id", "p_default", "logit", "decision", "tau"],         # every person, calibrated
     "lender_history": ["id", "approved_legacy", "explored", "propensity", "observed", "y_obs"],
 }
-LATENTS_COLUMNS = ["id", "mu_income", "sigma_income", "shock_prob", "rho_persist", "buffer0"]  # latents.parquet, Part 1 only
+LATENTS_COLUMNS = ["id", "mu_income", "sigma_income", "shock_prob", "rho_persist", "buffer0"]  # latents.parquet, generator only
 
 
 def check(name: str, df: pd.DataFrame) -> pd.DataFrame:

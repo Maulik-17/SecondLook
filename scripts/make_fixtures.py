@@ -1,5 +1,5 @@
-"""Writes small random data in the exact contract schema so Parts 2 and 3 can build before Part 1 delivers.
-Usage:  ~/.venv/bin/python scripts/make_fixtures.py
+"""Writes small random data in the exact contract schema so the audit and recourse code can run before the real data exists.
+Usage:  python scripts/make_fixtures.py
         export SL_DATA=data/fixtures/synth SL_ART=data/fixtures/artefacts
 The numbers are NOT meaningful; only the schema is."""
 import sys

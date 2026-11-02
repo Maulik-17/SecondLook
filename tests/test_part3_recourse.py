@@ -1,4 +1,4 @@
-"""Part 3 tests. Run against fixtures (SL_DATA / SL_ART) or the real data; fixtures are built if missing."""
+"""Recourse tests. Run against fixtures (SL_DATA / SL_ART) or the real data; fixtures are built if missing."""
 import subprocess
 import sys
 from pathlib import Path

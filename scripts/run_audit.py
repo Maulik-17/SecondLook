@@ -1,4 +1,4 @@
-"""Rebuild every Part 2 JSON: uncertainty.json, poolfresh.json, audit_summary.json.
+"""Rebuild every audit and uncertainty JSON: uncertainty.json, poolfresh.json, audit_summary.json.
 Usage: python scripts/run_audit.py [--fast]"""
 import json
 import sys

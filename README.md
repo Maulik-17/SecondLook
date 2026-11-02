@@ -91,11 +91,15 @@ A rejected applicant asks what to change over the next H months. Income is fitte
 
 scikit-learn, FastAPI, Streamlit, plotly, XGBoost (optional), SHAP (optional).
 
-## 7. Team
+## 7. Documents
+
+`docs/MODEL_CARD.md` (model), `docs/DATASHEET.md` (data), `docs/DATA_CONTRACT.md` (file schemas and function interfaces), `docs/DEMO_SCRIPT.md`, `docs/CONTROL_RUN.md`, `docs/BOOSTER_COMPARISON.md`, `docs/RETRAIN_STRESS.md`, `docs/ON_TIME_VARIANT.md`, `docs/DOCKER.md`.
+
+## 8. Team
 
 Harshit Jangir (leader), Nikhil Saini, Shreya, Maulik Pratap Singhal.
 
-## 8. Limits and claims we do not make
+## 9. Limits and claims we do not make
 
 - Data are synthetic or Berka (Czech), not Indian.
 - Rent, utility and recharge signals are assumed. In the current trained model the three on-time features were dropped by feature selection, so the recourse "on-time" action and the "gaming" stress test have no effect on the score (`artefacts/metrics.json`, `dropped_features`). An optional simulator variant that makes them informative exists but is off by default (`docs/ON_TIME_VARIANT.md`).
@@ -108,12 +112,12 @@ Harshit Jangir (leader), Nikhil Saini, Shreya, Maulik Pratap Singhal.
 - Recourse reveals how the score reacts to behaviour; real deployments must consider misuse and model extraction.
 - Any bias found is a property of the injected generator, not of the world.
 
-## 9. Attribution
+## 10. Attribution
 
 scikit-learn, XGBoost, FastAPI, Streamlit, plotly. Berka: P. Berka, PKDD'99 discovery challenge, obtained from the CTU Prague Relational Learning Repository; Motl and Schulte, "The CTU Prague Relational Learning Repository", arXiv:1511.03086. Methods adapted (reimplemented, no code copied): Fang et al. 2607.28847, Barrainkua et al. 2509.04128, De Toni et al. 2410.08007, Plecko 2605.11373, Kallus, Mao and Zhou 1906.00285, Tibshirani et al. (conformal under covariate shift), Scarone and Baeza-Yates 2606.18479.
 
 The arXiv ids above were checked against the arXiv listing titles on 31 Oct 2026: 2607.28847 Effort-Centric Fairness in Lending Decisions; 2509.04128 Revisiting (Un)Fairness in Recourse by Minimizing Worst-Case Social Burden; 2410.08007 Time Can Invalidate Algorithmic Recourse; 2605.11373 Causal Algorithmic Recourse: Foundations and Methods; 1906.00285 Assessing Algorithmic Fairness with Unobserved Protected Class Using Data Combination; 2606.18479 The Illusion of Improvement: Reject Inference Strategies in Credit Scoring; 1511.03086 The CTU Prague Relational Learning Repository.
 
-## 10. Licence and disclaimer
+## 11. Licence and disclaimer
 
 Copyright (c) 2026 Team NexusNavigators (Harshit Jangir, Nikhil Saini, Shreya, Maulik Pratap Singhal). Code and documents: GNU Affero General Public License v3.0, see `LICENSE`. The Berka dataset is not included and keeps its own terms (the repository it comes from states no licence). **Audit tool demonstration, not findings about real lenders.**

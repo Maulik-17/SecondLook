@@ -29,7 +29,7 @@ Groups audited: gender, urban_rural, region, occupation, thin_file, shared_phone
 
 Calibration by gender (test): F n = 1202, mean predicted 0.106, observed 0.096; M n = 2814, mean predicted 0.105, observed 0.112.
 
-Recourse (Part 3): see `artefacts/recourse_by_group.json` for months to approval by group under a fixed moderate plan.
+Recourse: see `artefacts/recourse_by_group.json` for months to approval by group under a fixed moderate plan.
 Audit highlights (`artefacts/audit_summary.json`, tau 0.20, test split, n = 4016; outcome metrics are among approved applicants, about 39% of each group has no observed outcome):
 
 | Group | n | Approval | Base default rate |

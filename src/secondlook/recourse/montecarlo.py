@@ -10,7 +10,7 @@ from .. import contracts as CT
 from . import actions as A
 from . import income_process as IP
 
-try:  # the shared implementation wins once Part 1 provides it
+try:  # the shared implementation wins when it is available
     from ..model.features import cash_features
 except ImportError:  # pragma: no cover - depends on branch state
     from ._features_stub import cash_features

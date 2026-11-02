@@ -1,9 +1,9 @@
-"""Single source of constants. Part 1 owns this file; changes need a message to the other two."""
+"""Single source of constants."""
 import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-# Real data by default; point both variables at data/fixtures/* to work before Part 1 delivers.
+# Real data by default; point both variables at data/fixtures/* to work before the real data exists.
 DATA_DIR = Path(os.environ.get("SL_DATA", ROOT / "data" / "synth"))
 ART_DIR = Path(os.environ.get("SL_ART", ROOT / "artefacts"))
 
@@ -26,7 +26,7 @@ ALPHA = 0.10
 EXPLORATION_EPS = 0.03
 W_MAX = 50
 
-# simulator (Part 1). Tuned so base default is about 11%, oracle AUC about 0.78, scorer AUC about 0.70 to 0.72
+# Simulator targets: tuned so base default is about 11%, oracle AUC about 0.78, scorer AUC about 0.70 to 0.72
 LTI_SCALE = 0.5          # loan instalment relative to income
 POST_SHOCK_P = 0.25      # monthly chance of an unobserved expense shock after the loan
 POST_SHOCK_MAX = 2.0     # shock size, multiples of monthly income (uniform 0.3 to this)

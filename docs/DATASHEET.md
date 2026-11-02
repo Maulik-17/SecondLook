@@ -6,7 +6,7 @@ Audit-tool demonstration data. Synthetic; calibrated on Berka (Czech) where stat
 Created to demonstrate audit methods for credit scoring of thin-file applicants where ground truth is known to the builders, which real lender data cannot offer.
 
 ## Composition
-Parquet tables (schema in `docs/SPLIT_CONTRACT.md`, checked by `contracts.check`): `people` (id, split, gender, urban_rural, region, occupation, thin_file, shared_phone, document_poor, loan_amount, loan_term, y_true, r_true), `features` (id + 17 features), `monthly` (inflow, outflow, balance; months 1..24 history, 25..36 outcome), `scores`, `lender_history` (legacy approval, exploration, propensity, observed outcome), `latents` (generator ground truth, for tests only).
+Parquet tables (schema in `docs/DATA_CONTRACT.md`, checked by `contracts.check`): `people` (id, split, gender, urban_rural, region, occupation, thin_file, shared_phone, document_poor, loan_amount, loan_term, y_true, r_true), `features` (id + 17 features), `monthly` (inflow, outflow, balance; months 1..24 history, 25..36 outcome), `scores`, `lender_history` (legacy approval, exploration, propensity, observed outcome), `latents` (generator ground truth, for tests only).
 Sizes: 20,000 people by default (`N_PEOPLE`); splits train 0.6, val 0.2, test 0.2, plus a separate drifted out-of-time cohort (`oot`). Thin-file people expose only 3 to 5 months of history to the model.
 
 ## Collection process

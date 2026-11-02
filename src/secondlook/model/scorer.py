@@ -1,4 +1,4 @@
-"""Reference scorer. Part 1 owns it and may replace the internals; the public interface below must not change."""
+"""Reference scorer. The public interface below must not change."""
 import joblib
 import numpy as np
 from scipy.special import expit, logit as _logit
