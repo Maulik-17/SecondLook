@@ -51,7 +51,7 @@ Berka (calibration) --> sim/ generator --> data/synth/*.parquet
 
 ## 5. How to run
 
-**One command:** `bash scripts/start.sh`. It builds the data, model and audit results if they are missing (about 7 minutes; `FAST=1` shortens it), then serves the app at http://localhost:8501 and the API at http://localhost:8000/docs. Ctrl-C stops both. Set `PYTHON=/path/to/python` to choose the interpreter. The step-by-step commands are below.
+**One command:** `python scripts/start.py`. It builds the data, model and audit results if they are missing (about 7 minutes; `--fast` shortens it), then serves the app at http://localhost:8501 and the API at http://localhost:8000/docs. Ctrl-C stops both. The step-by-step commands are below.
 
 ```
 git clone https://github.com/Maulik-17/SecondLook.git && cd SecondLook
@@ -77,14 +77,14 @@ A rejected applicant asks what to change over the next H months. Income is fitte
 
 ### Extra checks
 
-- **Control run (biases off):** `bash scripts/run_control.sh`. In the main seed, with the four injected biases off, the failure flags, the unexplained gap and the planted-proxy detection went quiet and the worst-to-best burden ratio fell from 2.29 to 1.56. **That contrast did not hold across three more seeds:** the level-down flag and the unexplained-gap flag fired with the biases on and off, and the burden ratio was not reliably larger with the biases on. So the summary flags are a sensitive screen, not a detector of our injected biases. The null-world check is also quiet only at tau 0.20 or higher. See `docs/CONTROL_RUN.md`. Reproduce with `bash scripts/run_seeds.sh`.
+- **Control run (biases off):** `python scripts/run_control.py`. In the main seed, with the four injected biases off, the failure flags, the unexplained gap and the planted-proxy detection went quiet and the worst-to-best burden ratio fell from 2.29 to 1.56. **That contrast did not hold across three more seeds:** the level-down flag and the unexplained-gap flag fired with the biases on and off, and the burden ratio was not reliably larger with the biases on. So the summary flags are a sensitive screen, not a detector of our injected biases. The null-world check is also quiet only at tau 0.20 or higher. See `docs/CONTROL_RUN.md`. Reproduce with `python scripts/run_seeds.py`.
 - **Booster comparison:** `python scripts/run_booster.py` fits a monotone-constrained XGBoost model on the same splits and features. On our data it is no more accurate than the scorecard (test AUC 0.705 vs 0.707), and its SHAP stability over 10 bootstrap refits is not clearly better than the coefficients'. The scorecard stays the main model. See `docs/BOOSTER_COMPARISON.md`.
 - **Recourse retraining stress:** plans are also tested against the lender retraining its scorer on drifted data during the plan (five bootstrap refits, each with its own threshold). It is reported as `retrain` and counted in the fragile flag. See `docs/RETRAIN_STRESS.md`.
 - **Live API check:** `python scripts/check_api_live.py` starts a real uvicorn server and calls all eight endpoints over HTTP (all returned 200 on 31 Oct 2026).
 - **Gamma sensitivity (Uncertainty page):** a slider that re-weights the exploration weights adversarially to show how far weighted conformal coverage could fall if the lender's approvals were confounded. It is a sensitivity analysis, not a guarantee. Coverage falls steadily as Gamma grows.
 - **Intersection scan (Audit page):** pairs of attributes are scanned for the burden on creditworthy rejected people and the approval rate. Cells under 50 are skipped and the number of cells examined is reported, so the worst cells are leads, not findings.
 - **Informative on-time signals (off by default):** `SL_ON_TIME_LOAD=0.07` makes the rent, utility and recharge signals carry hidden-risk information, so the on-time recourse lever and the gaming test act on the score. It raises test AUC to 0.72, but the null-world check then fails at the lower threshold, so we keep it off. See `docs/ON_TIME_VARIANT.md`.
-- **One command and a container:** `bash scripts/run_all.sh` runs the four pipeline steps. A `Dockerfile` is included but the image has **not been built or tested** (`docs/DOCKER.md`).
+- **One command:** `python scripts/run_all.py` runs the four pipeline steps (`--fast` shortens the audit), and `python scripts/start.py` builds if needed and serves both.
 - **No-label bounds:** the linear programme now has the paper's closed form (Kallus, Mao and Zhou, demographic-disparity set) beside it, and a test checks that the two agree. Their estimation and inference procedure is not implemented, so the bounds carry no sampling uncertainty.
 
 ## 6. Stack

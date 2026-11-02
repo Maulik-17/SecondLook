@@ -2,7 +2,7 @@
 
 Purpose: check that the audit flags what we injected and does not invent findings when the biases are absent.
 
-Method: the same pipeline (`make_data`, `train`, `run_audit`) with `SL_BIAS=0`, which turns off the four injected biases (`scripts/run_control.sh`). Outputs go to `data/control/`, so the main artefacts are untouched. Same seed, same sample size, scorer retrained on the control data.
+Method: the same pipeline (`make_data`, `train`, `run_audit`) with `SL_BIAS=0`, which turns off the four injected biases (`scripts/run_control.py`). Outputs go to `data/control/`, so the main artefacts are untouched. Same seed, same sample size, scorer retrained on the control data.
 
 | | Biases on (main) | Biases off (control) |
 |---|---|---|
@@ -20,7 +20,7 @@ What this shows, and what it does not:
 - A burden ratio above 1 remains with no injected bias. It reflects real differences in income volatility and base rates between groups in the generator, so a ratio above 1 is not by itself evidence of bias.
 - The null-world check run on the control scorer at its own threshold (0.15) was **not** quiet: the level-down flag and the unexplained-gap flag both fired on the null cohort. We traced this to the threshold, not the scorer. Running the null cohort at fixed thresholds gives the same result for both scorers: at tau 0.10 and 0.15 the unexplained-gap flag fires (and level-down at 0.15 for both scorers, and at 0.10 for the main scorer), and at tau 0.20 and 0.25 everything is quiet. So the audit is quiet on the null world at tau 0.20 or higher and raises false alarms at stricter thresholds, where the unequal base rates of that cohort show up as a gap. Treat the level-down and unexplained-gap flags as sensitive screens, not proof of harm, and read them together with the threshold in use. We did not retune the check.
 
-## Three more seeds (`bash scripts/run_seeds.sh`)
+## Three more seeds (`python scripts/run_seeds.py`)
 
 Each seed regenerates the whole world, retrains the scorer and runs the audit in `--fast` mode (no bootstrap), with the biases on and off. These runs use different seeds from the main run, so their numbers are not comparable with the table above.
 
