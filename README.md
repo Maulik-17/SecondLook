@@ -97,7 +97,12 @@ scikit-learn, FastAPI, Streamlit, plotly, XGBoost (optional), SHAP (optional).
 
 ## 8. Team
 
-Harshit Jangir (leader), Nikhil Saini, Shreya, Maulik Pratap Singhal.
+| Member | Contribution |
+|---|---|
+| Harshit Jangir (leader) | Streamlit user interface |
+| Nikhil Saini | Finance research and data collection |
+| Shreya | Streamlit user interface |
+| Maulik Pratap Singhal | Simulator, scorer, audit, uncertainty, recourse, API, tests and integration |
 
 Every team member is a co-author and may present, host or fork this project (Apache-2.0), keeping `LICENSE` and `NOTICE`. How to show it: `docs/PRESENTING.md`.
 
