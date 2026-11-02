@@ -2,7 +2,7 @@
 
 Target 2:50, hard limit 3:00. About 400 spoken words at a calm pace (roughly 140 words a minute). Screen names follow the sidebar; if the redesigned UI renames a page, keep the order and change only the names.
 
-Before recording: run `python scripts/start.py`, wait for the app, open Applicant, Audit and Recourse once so nothing is cold, browser zoom 110%, 1080p, microphone check. Pick the applicants in advance: one approved gig worker, one thin-file referral, one rejected applicant with a plan that comes back in under 5 seconds. Rehearse once with a timer, then record in one or two takes. Record the screen and voice together so the cuts do not drift.
+Before recording: run `bash scripts/start.sh`, wait for the app, open Applicant, Audit and Recourse once so nothing is cold, browser zoom 110%, 1080p, microphone check. Pick the applicants in advance: one approved gig worker, one thin-file referral, one rejected applicant with a plan that comes back in under 5 seconds. Rehearse once with a timer, then record in one or two takes. Record the screen and voice together so the cuts do not drift.
 
 | Time | Screen | Say (short form) |
 |---|---|---|
