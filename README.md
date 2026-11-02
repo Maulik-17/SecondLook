@@ -116,4 +116,4 @@ The arXiv ids above were checked against the arXiv listing titles on 31 Oct 2026
 
 ## 10. Licence and disclaimer
 
-Code and documents: MIT, see `LICENSE`. The Berka dataset is not included and keeps its own terms (the repository it comes from states no licence). **Audit tool demonstration, not findings about real lenders.**
+Copyright (c) 2026 Team NexusNavigators (Harshit Jangir, Nikhil Saini, Shreya, Maulik Pratap Singhal). Code and documents: GNU Affero General Public License v3.0, see `LICENSE`. The Berka dataset is not included and keeps its own terms (the repository it comes from states no licence). **Audit tool demonstration, not findings about real lenders.**
